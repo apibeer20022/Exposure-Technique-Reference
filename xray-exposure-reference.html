@@ -1,0 +1,971 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>X-Ray Exposure Reference</title>
+<style>
+  :root {
+    --bg: #f0f4f8;
+    --surface: #ffffff;
+    --surface-alt: #f7fafc;
+    --border: #e2e8f0;
+    --border-focus: #4299e1;
+    --accent: #2b6cb0;
+    --accent-light: #ebf4ff;
+    --accent-hover: #2c5282;
+    --text-primary: #1a202c;
+    --text-secondary: #4a5568;
+    --text-muted: #718096;
+    --success: #276749;
+    --success-bg: #f0fff4;
+    --danger: #c53030;
+    --danger-bg: #fff5f5;
+    --warning: #744210;
+    --warning-bg: #fffbeb;
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.08);
+    --shadow-md: 0 4px 12px rgba(0,0,0,0.10);
+    --shadow-lg: 0 8px 24px rgba(0,0,0,0.12);
+    --radius: 10px;
+    --radius-sm: 6px;
+    --font: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: var(--font);
+    background: var(--bg);
+    color: var(--text-primary);
+    min-height: 100vh;
+    font-size: 15px;
+    line-height: 1.5;
+  }
+
+  /* ── Header ── */
+  header {
+    background: linear-gradient(135deg, #1a365d 0%, #2b6cb0 100%);
+    color: #fff;
+    padding: 16px 16px 14px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.2);
+  }
+  .header-top {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+  .header-icon {
+    width: 36px; height: 36px;
+    background: rgba(255,255,255,0.15);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px; flex-shrink: 0;
+  }
+  header h1 {
+    font-size: 17px;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+  }
+  header p {
+    font-size: 11px;
+    opacity: 0.75;
+    margin-top: 1px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+  .search-box {
+    position: relative;
+  }
+  .search-box input {
+    width: 100%;
+    padding: 9px 12px 9px 36px;
+    border-radius: 8px;
+    border: none;
+    background: rgba(255,255,255,0.15);
+    color: #fff;
+    font-size: 14px;
+    outline: none;
+    transition: background 0.2s;
+  }
+  .search-box input::placeholder { color: rgba(255,255,255,0.6); }
+  .search-box input:focus { background: rgba(255,255,255,0.22); }
+  .search-icon {
+    position: absolute; left: 10px; top: 50%; transform: translateY(-50%);
+    opacity: 0.7; pointer-events: none; font-size: 14px;
+  }
+  .search-clear {
+    position: absolute; right: 8px; top: 50%; transform: translateY(-50%);
+    background: none; border: none; color: rgba(255,255,255,0.7);
+    cursor: pointer; font-size: 16px; padding: 2px 4px;
+    display: none;
+  }
+
+  /* ── Toolbar ── */
+  .toolbar {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 10px 16px;
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .btn {
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 7px 12px;
+    border-radius: var(--radius-sm);
+    border: none;
+    font-size: 13px; font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s;
+    line-height: 1;
+  }
+  .btn-primary {
+    background: var(--accent); color: #fff;
+  }
+  .btn-primary:hover { background: var(--accent-hover); }
+  .btn-outline {
+    background: transparent;
+    border: 1.5px solid var(--border);
+    color: var(--text-secondary);
+  }
+  .btn-outline:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-light); }
+  .btn-danger { background: var(--danger-bg); color: var(--danger); border: 1.5px solid #fed7d7; }
+  .btn-danger:hover { background: #fed7d7; }
+  .btn-success { background: var(--success-bg); color: var(--success); border: 1.5px solid #c6f6d5; }
+  .btn-success:hover { background: #c6f6d5; }
+  .btn-sm { padding: 5px 9px; font-size: 12px; }
+
+  .toolbar-spacer { flex: 1; }
+  .record-count {
+    font-size: 12px;
+    color: var(--text-muted);
+    white-space: nowrap;
+  }
+
+  /* ── Main ── */
+  main { padding: 12px 12px 80px; max-width: 700px; margin: 0 auto; }
+
+  /* ── Section ── */
+  .section {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    margin-bottom: 10px;
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+  }
+  .section-header {
+    display: flex; align-items: center;
+    padding: 13px 14px;
+    cursor: pointer;
+    user-select: none;
+    background: var(--surface);
+    transition: background 0.15s;
+    gap: 10px;
+  }
+  .section-header:hover { background: var(--surface-alt); }
+  .section-icon { font-size: 18px; width: 28px; text-align: center; }
+  .section-title { font-size: 14px; font-weight: 700; color: var(--text-primary); flex: 1; }
+  .section-meta { font-size: 12px; color: var(--text-muted); }
+  .section-chevron {
+    font-size: 12px; color: var(--text-muted);
+    transition: transform 0.2s;
+    flex-shrink: 0;
+  }
+  .section.open .section-chevron { transform: rotate(180deg); }
+  .section-body { display: none; border-top: 1px solid var(--border); }
+  .section.open .section-body { display: block; }
+
+  /* ── Exam Item ── */
+  .exam-item {
+    border-bottom: 1px solid var(--border);
+    transition: background 0.15s;
+  }
+  .exam-item:last-child { border-bottom: none; }
+  .exam-row {
+    display: flex; align-items: center;
+    padding: 10px 14px;
+    cursor: pointer;
+    gap: 10px;
+  }
+  .exam-row:hover { background: var(--surface-alt); }
+  .exam-name {
+    flex: 1; font-size: 14px; font-weight: 500;
+    color: var(--text-primary);
+  }
+  .exam-badges {
+    display: flex; gap: 5px; align-items: center; flex-shrink: 0;
+  }
+  .badge {
+    font-size: 11px; font-weight: 700;
+    padding: 2px 7px; border-radius: 20px;
+    white-space: nowrap;
+  }
+  .badge-kv { background: #ebf4ff; color: #2b6cb0; }
+  .badge-mas { background: #f0fff4; color: #276749; }
+  .badge-grid-yes { background: #fff5f5; color: #c53030; }
+  .badge-grid-no { background: var(--surface-alt); color: var(--text-muted); }
+  .exam-chevron { font-size: 11px; color: var(--text-muted); transition: transform 0.2s; }
+  .exam-item.open .exam-chevron { transform: rotate(180deg); }
+
+  /* ── Exam Card ── */
+  .exam-card {
+    display: none;
+    padding: 14px;
+    background: var(--accent-light);
+    border-top: 1px solid var(--border);
+  }
+  .exam-item.open .exam-card { display: block; }
+  .card-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 12px;
+  }
+  .card-field {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 10px 12px;
+  }
+  .card-field-label {
+    font-size: 10px; font-weight: 700; color: var(--text-muted);
+    text-transform: uppercase; letter-spacing: 0.8px;
+    margin-bottom: 4px;
+  }
+  .card-field-value {
+    font-size: 20px; font-weight: 800;
+    color: var(--text-primary);
+    font-variant-numeric: tabular-nums;
+    line-height: 1.2;
+  }
+  .card-field-unit {
+    font-size: 11px; color: var(--text-muted); font-weight: 500;
+    margin-top: 1px;
+  }
+  .card-field.grid-yes { border-color: #fed7d7; }
+  .card-field.grid-yes .card-field-value { color: var(--danger); }
+  .card-actions { display: flex; gap: 8px; }
+
+  /* ── Edit Form ── */
+  .edit-form { display: none; }
+  .exam-item.editing .edit-form { display: block; }
+  .exam-item.editing .exam-card { display: none; }
+  .form-grid {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 8px; margin-bottom: 10px;
+  }
+  .form-group { display: flex; flex-direction: column; gap: 4px; }
+  .form-group.full { grid-column: 1 / -1; }
+  .form-group label {
+    font-size: 11px; font-weight: 700; color: var(--text-muted);
+    text-transform: uppercase; letter-spacing: 0.7px;
+  }
+  .form-group input, .form-group select {
+    padding: 8px 10px;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-sm);
+    font-size: 14px; font-family: var(--font);
+    color: var(--text-primary);
+    background: var(--surface);
+    outline: none;
+    transition: border-color 0.15s;
+  }
+  .form-group input:focus, .form-group select:focus { border-color: var(--border-focus); }
+  .edit-actions { display: flex; gap: 8px; }
+
+  /* ── Add Exam Panel ── */
+  .add-exam-panel {
+    background: var(--surface);
+    border: 1.5px dashed var(--border);
+    border-radius: var(--radius);
+    padding: 14px;
+    margin-bottom: 10px;
+    display: none;
+  }
+  .add-exam-panel.open { display: block; }
+  .add-exam-panel h3 {
+    font-size: 13px; font-weight: 700; color: var(--accent);
+    margin-bottom: 12px;
+  }
+
+  /* ── Empty / No result ── */
+  .no-results {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--text-muted);
+    display: none;
+  }
+  .no-results.visible { display: block; }
+  .no-results-icon { font-size: 36px; margin-bottom: 8px; }
+  .no-results p { font-size: 14px; }
+
+  /* ── Toast ── */
+  #toast {
+    position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(80px);
+    background: #1a202c; color: #fff;
+    padding: 10px 20px; border-radius: 24px;
+    font-size: 13px; font-weight: 600;
+    z-index: 9999; transition: transform 0.25s ease;
+    pointer-events: none; white-space: nowrap;
+    box-shadow: var(--shadow-md);
+  }
+  #toast.show { transform: translateX(-50%) translateY(0); }
+
+  /* ── Modal ── */
+  .modal-overlay {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.45);
+    z-index: 200; display: none;
+    align-items: center; justify-content: center;
+    padding: 16px;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal {
+    background: var(--surface);
+    border-radius: var(--radius);
+    padding: 20px;
+    width: 100%; max-width: 460px;
+    box-shadow: var(--shadow-lg);
+    max-height: 80vh; overflow-y: auto;
+  }
+  .modal h3 { font-size: 15px; font-weight: 700; margin-bottom: 12px; }
+  .modal textarea {
+    width: 100%; height: 200px;
+    border: 1.5px solid var(--border); border-radius: var(--radius-sm);
+    padding: 10px; font-size: 12px; font-family: monospace;
+    resize: vertical; outline: none;
+    transition: border-color 0.15s;
+  }
+  .modal textarea:focus { border-color: var(--border-focus); }
+  .modal-actions { display: flex; gap: 8px; margin-top: 12px; justify-content: flex-end; }
+
+  /* ── Collapse all/expand all ── */
+  .section-collapse-hint {
+    font-size: 11px; color: var(--text-muted);
+    cursor: pointer; padding: 2px 4px; border-radius: 4px;
+    transition: background 0.15s;
+  }
+  .section-collapse-hint:hover { background: var(--surface-alt); color: var(--accent); }
+
+  /* Search highlight */
+  .highlight { background: #fef08a; border-radius: 2px; padding: 0 1px; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-top">
+    <div class="header-icon">🩻</div>
+    <div>
+      <h1>Exposure Technique Reference</h1>
+      <p>Diagnostic Radiography · kVp / mAs Guide</p>
+    </div>
+  </div>
+  <div class="search-box">
+    <span class="search-icon">🔍</span>
+    <input type="text" id="searchInput" placeholder="Search examination…" autocomplete="off">
+    <button class="search-clear" id="searchClear">✕</button>
+  </div>
+</header>
+
+<div class="toolbar">
+  <button class="btn btn-primary" id="btnAddExam">＋ Add Exam</button>
+  <button class="btn btn-outline" id="btnExport">⬇ Export</button>
+  <button class="btn btn-outline" id="btnImport">⬆ Import</button>
+  <div class="toolbar-spacer"></div>
+  <span class="record-count" id="recordCount"></span>
+</div>
+
+<main>
+  <!-- Add Exam Panel -->
+  <div class="add-exam-panel" id="addExamPanel">
+    <h3>＋ Add New Examination</h3>
+    <div class="form-grid">
+      <div class="form-group full">
+        <label>Examination Name</label>
+        <input type="text" id="addName" placeholder="e.g. Wrist PA">
+      </div>
+      <div class="form-group">
+        <label>kV</label>
+        <input type="number" id="addKv" placeholder="e.g. 60">
+      </div>
+      <div class="form-group">
+        <label>mAs</label>
+        <input type="number" id="addMas" step="0.1" placeholder="e.g. 3.2">
+      </div>
+      <div class="form-group">
+        <label>SID (cm)</label>
+        <input type="number" id="addSid" placeholder="e.g. 100">
+      </div>
+      <div class="form-group">
+        <label>Grid</label>
+        <select id="addGrid">
+          <option value="No">No</option>
+          <option value="Yes">Yes</option>
+        </select>
+      </div>
+      <div class="form-group full">
+        <label>Body Part Section</label>
+        <select id="addSection">
+          <option value="Head & Neck">Head &amp; Neck</option>
+          <option value="Eyes">Eyes</option>
+          <option value="Chest & Abdomen">Chest &amp; Abdomen</option>
+          <option value="Spine">Spine</option>
+          <option value="Upper Extremities">Upper Extremities</option>
+          <option value="Lower Extremities">Lower Extremities</option>
+          <option value="Pelvis & Hip">Pelvis &amp; Hip</option>
+        </select>
+      </div>
+    </div>
+    <div style="display:flex;gap:8px">
+      <button class="btn btn-primary" id="btnSaveAdd">Save</button>
+      <button class="btn btn-outline" id="btnCancelAdd">Cancel</button>
+    </div>
+  </div>
+
+  <div id="sectionsContainer"></div>
+  <div class="no-results" id="noResults">
+    <div class="no-results-icon">🔍</div>
+    <p>No examination found for "<span id="noResultsTerm"></span>"</p>
+  </div>
+</main>
+
+<!-- Export Modal -->
+<div class="modal-overlay" id="exportModal">
+  <div class="modal">
+    <h3>⬇ Export JSON</h3>
+    <textarea id="exportData" readonly></textarea>
+    <div class="modal-actions">
+      <button class="btn btn-primary" id="btnCopyExport">Copy</button>
+      <button class="btn btn-outline" id="btnDownloadExport">Download</button>
+      <button class="btn btn-outline" id="btnCloseExport">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- Import Modal -->
+<div class="modal-overlay" id="importModal">
+  <div class="modal">
+    <h3>⬆ Import JSON</h3>
+    <p style="font-size:12px;color:#718096;margin-bottom:8px;">Paste exported JSON to replace all data. This cannot be undone.</p>
+    <textarea id="importData" placeholder='Paste JSON here…'></textarea>
+    <div class="modal-actions">
+      <button class="btn btn-danger" id="btnConfirmImport">Import &amp; Replace</button>
+      <button class="btn btn-outline" id="btnCloseImport">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+// ════════════════════════════════════════════
+//  Default Dataset
+// ════════════════════════════════════════════
+const DEFAULT_DATA = {
+  "Head & Neck": [
+    { id: uid(), name: "Skull AP / Water / Caldwell's", kv: 75, mas: 15, sid: 100, grid: "Yes" },
+    { id: uid(), name: "Skull Lateral", kv: 70, mas: 12, sid: 100, grid: "Yes" },
+    { id: uid(), name: "Water's / Towne's / SVM", kv: 80, mas: 18, sid: 100, grid: "Yes" },
+    { id: uid(), name: "TM Joint / Mandible", kv: 75, mas: 15, sid: 100, grid: "Yes" },
+    { id: uid(), name: "Mastoid", kv: 75, mas: 15, sid: 100, grid: "Yes" },
+    { id: uid(), name: "Adenoid", kv: 70, mas: 6, sid: 100, grid: "No" },
+    { id: uid(), name: "Neck AP", kv: 70, mas: 6, sid: 100, grid: "No" },
+    { id: uid(), name: "Neck Lateral", kv: 75, mas: 15, sid: 100, grid: "No" },
+  ],
+  "Eyes": [
+    { id: uid(), name: "Orbit", kv: 75, mas: 8, sid: 100, grid: "No" },
+    { id: uid(), name: "Rhese's (Optic Foramen)", kv: 75, mas: 12, sid: 100, grid: "No" },
+  ],
+  "Chest & Abdomen": [
+    { id: uid(), name: "Chest PA / AP / Lordotic", kv: 80, mas: 4, sid: 180, grid: "Yes" },
+    { id: uid(), name: "Chest Lateral", kv: 83, mas: 5, sid: 180, grid: "Yes" },
+    { id: uid(), name: "Abdomen AP", kv: 80, mas: 14, sid: 100, grid: "Yes" },
+    { id: uid(), name: "Abdomen Lateral", kv: 80, mas: 18, sid: 100, grid: "Yes" },
+    { id: uid(), name: "KUB", kv: 80, mas: 14, sid: 100, grid: "Yes" },
+  ],
+  "Spine": [
+    { id: uid(), name: "C-Spine AP", kv: 70, mas: 10, sid: 100, grid: "Yes" },
+    { id: uid(), name: "C-Spine Lateral", kv: 75, mas: 15, sid: 100, grid: "Yes" },
+    { id: uid(), name: "T-Spine AP", kv: 75, mas: 15, sid: 100, grid: "Yes" },
+    { id: uid(), name: "T-Spine Lateral", kv: 80, mas: 20, sid: 100, grid: "Yes" },
+    { id: uid(), name: "L-Spine AP", kv: 80, mas: 20, sid: 100, grid: "Yes" },
+    { id: uid(), name: "L-Spine Lateral", kv: 85, mas: 25, sid: 100, grid: "Yes" },
+  ],
+  "Upper Extremities": [
+    { id: uid(), name: "Finger", kv: 50, mas: 1.5, sid: 100, grid: "No" },
+    { id: uid(), name: "Hand", kv: 50, mas: 2, sid: 100, grid: "No" },
+    { id: uid(), name: "Wrist", kv: 55, mas: 2, sid: 100, grid: "No" },
+    { id: uid(), name: "Forearm", kv: 55, mas: 3, sid: 100, grid: "No" },
+    { id: uid(), name: "Elbow", kv: 60, mas: 3, sid: 100, grid: "No" },
+    { id: uid(), name: "Humerus", kv: 65, mas: 4, sid: 100, grid: "No" },
+    { id: uid(), name: "Shoulder", kv: 75, mas: 12, sid: 100, grid: "Yes" },
+    { id: uid(), name: "Clavicle", kv: 75, mas: 12, sid: 100, grid: "Yes" },
+    { id: uid(), name: "Scapula", kv: 75, mas: 12, sid: 100, grid: "Yes" },
+  ],
+  "Lower Extremities": [
+    { id: uid(), name: "Toes", kv: 55, mas: 2, sid: 100, grid: "No" },
+    { id: uid(), name: "Foot", kv: 55, mas: 2, sid: 100, grid: "No" },
+    { id: uid(), name: "Ankle", kv: 55, mas: 3, sid: 100, grid: "No" },
+    { id: uid(), name: "Calcaneus", kv: 60, mas: 3, sid: 100, grid: "No" },
+    { id: uid(), name: "Tibia / Fibula", kv: 60, mas: 4, sid: 100, grid: "No" },
+    { id: uid(), name: "Knee", kv: 60, mas: 4, sid: 100, grid: "No" },
+    { id: uid(), name: "Skyline (Sunrise)", kv: 65, mas: 5, sid: 100, grid: "No" },
+    { id: uid(), name: "Femur", kv: 75, mas: 8, sid: 100, grid: "No" },
+  ],
+  "Pelvis & Hip": [
+    { id: uid(), name: "Coccyx", kv: 80, mas: 14, sid: 100, grid: "Yes" },
+    { id: uid(), name: "Pelvis AP", kv: 80, mas: 14, sid: 100, grid: "Yes" },
+    { id: uid(), name: "Sacrum", kv: 80, mas: 16, sid: 100, grid: "Yes" },
+    { id: uid(), name: "Hip AP", kv: 80, mas: 16, sid: 100, grid: "Yes" },
+    { id: uid(), name: "Hip Judet", kv: 80, mas: 16, sid: 100, grid: "Yes" },
+    { id: uid(), name: "SI Joint", kv: 80, mas: 16, sid: 100, grid: "Yes" },
+    { id: uid(), name: "Hip Lateral (Frog-leg)", kv: 85, mas: 16, sid: 100, grid: "Yes" },
+  ]
+};
+
+const SECTION_ICONS = {
+  "Head & Neck": "💀",
+  "Eyes": "👁",
+  "Chest & Abdomen": "🫁",
+  "Spine": "🦴",
+  "Upper Extremities": "💪",
+  "Lower Extremities": "🦵",
+  "Pelvis & Hip": "🦻"
+};
+
+// ════════════════════════════════════════════
+//  Utilities
+// ════════════════════════════════════════════
+function uid() {
+  return Math.random().toString(36).slice(2, 10) + Date.now().toString(36);
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(t._timer);
+  t._timer = setTimeout(() => t.classList.remove('show'), 2200);
+}
+
+// ════════════════════════════════════════════
+//  Storage
+// ════════════════════════════════════════════
+const LS_KEY = 'xray_exposure_v2';
+
+function loadData() {
+  try {
+    const raw = localStorage.getItem(LS_KEY);
+    if (raw) return JSON.parse(raw);
+  } catch(e) {}
+  return JSON.parse(JSON.stringify(DEFAULT_DATA));
+}
+
+function saveData(data) {
+  localStorage.setItem(LS_KEY, JSON.stringify(data));
+}
+
+// ════════════════════════════════════════════
+//  State
+// ════════════════════════════════════════════
+let db = loadData();
+let searchTerm = '';
+let openSections = new Set(Object.keys(db));
+let openExams = new Set();
+let editingExam = null;
+
+// ════════════════════════════════════════════
+//  Render
+// ════════════════════════════════════════════
+function escHtml(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function highlightText(text, term) {
+  if (!term) return escHtml(text);
+  const re = new RegExp(`(${term.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')})`, 'gi');
+  return escHtml(text).replace(re, '<mark class="highlight">$1</mark>');
+}
+
+function countTotal() {
+  return Object.values(db).reduce((s, arr) => s + arr.length, 0);
+}
+
+function renderAll() {
+  const container = document.getElementById('sectionsContainer');
+  container.innerHTML = '';
+  let totalVisible = 0;
+
+  const sectionOrder = [
+    "Head & Neck","Eyes","Chest & Abdomen","Spine",
+    "Upper Extremities","Lower Extremities","Pelvis & Hip"
+  ];
+
+  sectionOrder.forEach(sectionKey => {
+    const exams = db[sectionKey] || [];
+
+    // Filter by search
+    const filtered = searchTerm
+      ? exams.filter(e => e.name.toLowerCase().includes(searchTerm.toLowerCase()))
+      : exams;
+
+    if (searchTerm && filtered.length === 0) return;
+    totalVisible += filtered.length;
+
+    const isOpen = openSections.has(sectionKey) || !!searchTerm;
+
+    const section = document.createElement('div');
+    section.className = 'section' + (isOpen ? ' open' : '');
+    section.dataset.section = sectionKey;
+
+    section.innerHTML = `
+      <div class="section-header" onclick="toggleSection('${escHtml(sectionKey)}')">
+        <span class="section-icon">${SECTION_ICONS[sectionKey] || '📋'}</span>
+        <span class="section-title">${escHtml(sectionKey)}</span>
+        <span class="section-meta">${filtered.length} exam${filtered.length!==1?'s':''}</span>
+        <span class="section-chevron">▼</span>
+      </div>
+      <div class="section-body" id="body-${cssId(sectionKey)}">
+        ${renderExamItems(filtered, sectionKey)}
+        <div style="padding:10px 14px;border-top:1px solid var(--border)">
+          <button class="btn btn-outline btn-sm" onclick="openAddForSection('${escHtml(sectionKey)}')">＋ Add to ${escHtml(sectionKey)}</button>
+        </div>
+      </div>
+    `;
+    container.appendChild(section);
+  });
+
+  // No results
+  const noResults = document.getElementById('noResults');
+  if (searchTerm && totalVisible === 0) {
+    noResults.classList.add('visible');
+    document.getElementById('noResultsTerm').textContent = searchTerm;
+  } else {
+    noResults.classList.remove('visible');
+  }
+
+  // Record count
+  document.getElementById('recordCount').textContent =
+    `${countTotal()} examinations`;
+}
+
+function cssId(str) {
+  return str.replace(/[^a-z0-9]/gi,'_');
+}
+
+function renderExamItems(exams, sectionKey) {
+  if (!exams.length) {
+    return `<div style="padding:16px 14px;color:var(--text-muted);font-size:13px;font-style:italic">No examinations in this section.</div>`;
+  }
+  return exams.map(exam => {
+    const isOpen = openExams.has(exam.id);
+    const isEditing = editingExam === exam.id;
+    let cls = 'exam-item';
+    if (isOpen || isEditing) cls += ' open';
+    if (isEditing) cls += ' editing';
+
+    return `
+    <div class="${cls}" id="exam-${exam.id}">
+      <div class="exam-row" onclick="toggleExam('${exam.id}')">
+        <span class="exam-name">${highlightText(exam.name, searchTerm)}</span>
+        <div class="exam-badges">
+          <span class="badge badge-kv">${exam.kv} kV</span>
+          <span class="badge badge-mas">${exam.mas} mAs</span>
+          ${exam.grid==='Yes' ? `<span class="badge badge-grid-yes">Grid</span>` : ''}
+        </div>
+        <span class="exam-chevron">▼</span>
+      </div>
+      <div class="exam-card">
+        <div class="card-grid">
+          <div class="card-field">
+            <div class="card-field-label">kV</div>
+            <div class="card-field-value">${exam.kv}</div>
+            <div class="card-field-unit">kilovolt</div>
+          </div>
+          <div class="card-field">
+            <div class="card-field-label">mAs</div>
+            <div class="card-field-value">${exam.mas}</div>
+            <div class="card-field-unit">milliampere·second</div>
+          </div>
+          <div class="card-field">
+            <div class="card-field-label">SID</div>
+            <div class="card-field-value">${exam.sid}</div>
+            <div class="card-field-unit">cm</div>
+          </div>
+          <div class="card-field ${exam.grid==='Yes' ? 'grid-yes' : ''}">
+            <div class="card-field-label">Grid</div>
+            <div class="card-field-value">${exam.grid}</div>
+            <div class="card-field-unit">${exam.grid==='Yes' ? 'required' : 'not required'}</div>
+          </div>
+        </div>
+        <div class="card-actions">
+          <button class="btn btn-outline btn-sm" onclick="startEdit('${exam.id}')">✏ Edit</button>
+          <button class="btn btn-danger btn-sm" onclick="deleteExam('${exam.id}','${escHtml(sectionKey)}')">🗑 Delete</button>
+        </div>
+      </div>
+      <div class="edit-form" style="padding:14px;background:var(--warning-bg);border-top:1px solid var(--border)">
+        <div class="form-grid">
+          <div class="form-group full">
+            <label>Examination Name</label>
+            <input type="text" id="ef-name-${exam.id}" value="${escHtml(exam.name)}">
+          </div>
+          <div class="form-group">
+            <label>kV</label>
+            <input type="number" id="ef-kv-${exam.id}" value="${exam.kv}">
+          </div>
+          <div class="form-group">
+            <label>mAs</label>
+            <input type="number" id="ef-mas-${exam.id}" step="0.1" value="${exam.mas}">
+          </div>
+          <div class="form-group">
+            <label>SID (cm)</label>
+            <input type="number" id="ef-sid-${exam.id}" value="${exam.sid}">
+          </div>
+          <div class="form-group">
+            <label>Grid</label>
+            <select id="ef-grid-${exam.id}">
+              <option value="No" ${exam.grid==='No'?'selected':''}>No</option>
+              <option value="Yes" ${exam.grid==='Yes'?'selected':''}>Yes</option>
+            </select>
+          </div>
+          <div class="form-group full">
+            <label>Move to Section</label>
+            <select id="ef-section-${exam.id}">
+              ${['Head & Neck','Eyes','Chest & Abdomen','Spine','Upper Extremities','Lower Extremities','Pelvis & Hip']
+                .map(s => `<option value="${escHtml(s)}" ${s===sectionKey?'selected':''}>${escHtml(s)}</option>`).join('')}
+            </select>
+          </div>
+        </div>
+        <div class="edit-actions">
+          <button class="btn btn-success btn-sm" onclick="saveEdit('${exam.id}','${escHtml(sectionKey)}')">💾 Save</button>
+          <button class="btn btn-outline btn-sm" onclick="cancelEdit('${exam.id}')">Cancel</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ════════════════════════════════════════════
+//  Interactions
+// ════════════════════════════════════════════
+function toggleSection(key) {
+  if (openSections.has(key)) openSections.delete(key);
+  else openSections.add(key);
+  renderAll();
+}
+
+function toggleExam(id) {
+  if (editingExam === id) return;
+  if (openExams.has(id)) openExams.delete(id);
+  else openExams.add(id);
+  renderAll();
+}
+
+function startEdit(id) {
+  editingExam = id;
+  openExams.add(id);
+  renderAll();
+  setTimeout(() => {
+    const el = document.getElementById(`ef-name-${id}`);
+    if (el) el.focus();
+  }, 50);
+}
+
+function cancelEdit(id) {
+  editingExam = null;
+  renderAll();
+}
+
+function saveEdit(id, oldSection) {
+  const name = document.getElementById(`ef-name-${id}`).value.trim();
+  const kv = parseFloat(document.getElementById(`ef-kv-${id}`).value);
+  const mas = parseFloat(document.getElementById(`ef-mas-${id}`).value);
+  const sid = parseFloat(document.getElementById(`ef-sid-${id}`).value);
+  const grid = document.getElementById(`ef-grid-${id}`).value;
+  const newSection = document.getElementById(`ef-section-${id}`).value;
+
+  if (!name || isNaN(kv) || isNaN(mas) || isNaN(sid)) {
+    showToast('⚠ Please fill in all fields'); return;
+  }
+
+  // Find & update
+  const arr = db[oldSection];
+  const idx = arr.findIndex(e => e.id === id);
+  if (idx === -1) return;
+
+  const updated = { id, name, kv, mas, sid, grid };
+
+  if (newSection !== oldSection) {
+    arr.splice(idx, 1);
+    if (!db[newSection]) db[newSection] = [];
+    db[newSection].push(updated);
+    openSections.add(newSection);
+  } else {
+    arr[idx] = updated;
+  }
+
+  editingExam = null;
+  saveData(db);
+  renderAll();
+  showToast('✓ Saved');
+}
+
+function deleteExam(id, sectionKey) {
+  if (!confirm('Delete this examination?')) return;
+  db[sectionKey] = db[sectionKey].filter(e => e.id !== id);
+  openExams.delete(id);
+  saveData(db);
+  renderAll();
+  showToast('🗑 Deleted');
+}
+
+// ════════════════════════════════════════════
+//  Add Exam
+// ════════════════════════════════════════════
+function openAddForSection(sectionKey) {
+  const panel = document.getElementById('addExamPanel');
+  document.getElementById('addSection').value = sectionKey;
+  panel.classList.add('open');
+  document.getElementById('addName').focus();
+  panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+document.getElementById('btnAddExam').addEventListener('click', () => {
+  const panel = document.getElementById('addExamPanel');
+  panel.classList.toggle('open');
+  if (panel.classList.contains('open')) {
+    document.getElementById('addName').focus();
+  }
+});
+
+document.getElementById('btnCancelAdd').addEventListener('click', () => {
+  document.getElementById('addExamPanel').classList.remove('open');
+  clearAddForm();
+});
+
+document.getElementById('btnSaveAdd').addEventListener('click', () => {
+  const name = document.getElementById('addName').value.trim();
+  const kv = parseFloat(document.getElementById('addKv').value);
+  const mas = parseFloat(document.getElementById('addMas').value);
+  const sid = parseFloat(document.getElementById('addSid').value);
+  const grid = document.getElementById('addGrid').value;
+  const section = document.getElementById('addSection').value;
+
+  if (!name || isNaN(kv) || isNaN(mas) || isNaN(sid)) {
+    showToast('⚠ Please fill in all fields'); return;
+  }
+
+  if (!db[section]) db[section] = [];
+  db[section].push({ id: uid(), name, kv, mas, sid, grid });
+  openSections.add(section);
+  saveData(db);
+  clearAddForm();
+  document.getElementById('addExamPanel').classList.remove('open');
+  renderAll();
+  showToast('✓ Examination added');
+});
+
+function clearAddForm() {
+  ['addName','addKv','addMas','addSid'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('addGrid').value = 'No';
+  document.getElementById('addSid').value = '';
+}
+
+// ════════════════════════════════════════════
+//  Search
+// ════════════════════════════════════════════
+const searchInput = document.getElementById('searchInput');
+const searchClear = document.getElementById('searchClear');
+
+searchInput.addEventListener('input', () => {
+  searchTerm = searchInput.value.trim();
+  searchClear.style.display = searchTerm ? 'block' : 'none';
+  renderAll();
+});
+searchClear.addEventListener('click', () => {
+  searchInput.value = '';
+  searchTerm = '';
+  searchClear.style.display = 'none';
+  renderAll();
+  searchInput.focus();
+});
+
+// ════════════════════════════════════════════
+//  Export
+// ════════════════════════════════════════════
+document.getElementById('btnExport').addEventListener('click', () => {
+  const json = JSON.stringify(db, null, 2);
+  document.getElementById('exportData').value = json;
+  document.getElementById('exportModal').classList.add('open');
+});
+
+document.getElementById('btnCopyExport').addEventListener('click', () => {
+  const ta = document.getElementById('exportData');
+  ta.select();
+  document.execCommand('copy');
+  showToast('✓ Copied to clipboard');
+});
+
+document.getElementById('btnDownloadExport').addEventListener('click', () => {
+  const json = document.getElementById('exportData').value;
+  const blob = new Blob([json], { type: 'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `xray-exposure-${new Date().toISOString().slice(0,10)}.json`;
+  a.click();
+  showToast('✓ Downloaded');
+});
+
+document.getElementById('btnCloseExport').addEventListener('click', () => {
+  document.getElementById('exportModal').classList.remove('open');
+});
+
+// ════════════════════════════════════════════
+//  Import
+// ════════════════════════════════════════════
+document.getElementById('btnImport').addEventListener('click', () => {
+  document.getElementById('importData').value = '';
+  document.getElementById('importModal').classList.add('open');
+});
+
+document.getElementById('btnConfirmImport').addEventListener('click', () => {
+  try {
+    const parsed = JSON.parse(document.getElementById('importData').value);
+    // Validate basic structure
+    if (typeof parsed !== 'object' || Array.isArray(parsed)) throw new Error();
+    db = parsed;
+    saveData(db);
+    openSections = new Set(Object.keys(db));
+    document.getElementById('importModal').classList.remove('open');
+    renderAll();
+    showToast('✓ Imported successfully');
+  } catch(e) {
+    showToast('⚠ Invalid JSON');
+  }
+});
+
+document.getElementById('btnCloseImport').addEventListener('click', () => {
+  document.getElementById('importModal').classList.remove('open');
+});
+
+// Close modals on overlay click
+['exportModal','importModal'].forEach(id => {
+  document.getElementById(id).addEventListener('click', function(e) {
+    if (e.target === this) this.classList.remove('open');
+  });
+});
+
+// ════════════════════════════════════════════
+//  Init
+// ════════════════════════════════════════════
+renderAll();
+</script>
+</body>
+</html>
